@@ -960,8 +960,8 @@
           </header>
 
           <div class="contact__grid">
-            <!-- Front-end only form: shows a thank-you message on submit -->
-            <form class="form" id="contactForm" novalidate data-reveal>
+            <!-- Enquiry form: posts to contact.php, which emails info@mediachore.co.za -->
+            <form class="form" id="contactForm" action="contact.php" method="post" novalidate data-reveal>
               <div class="field">
                 <input id="cfName" name="name" type="text" placeholder=" " autocomplete="name" required />
                 <label for="cfName">Your name</label>
@@ -987,22 +987,22 @@
               <fieldset class="chipset">
                 <legend>What do you need? Pick any.</legend>
                 <label class="pick">
-                  <input type="checkbox" name="need" value="Brand Strategy &amp; Identity" /><span>Brand &amp; identity</span>
+                  <input type="checkbox" name="need[]" value="Brand Strategy &amp; Identity" /><span>Brand &amp; identity</span>
                 </label>
                 <label class="pick">
-                  <input type="checkbox" name="need" value="Website Design &amp; Development" /><span>Website</span>
+                  <input type="checkbox" name="need[]" value="Website Design &amp; Development" /><span>Website</span>
                 </label>
                 <label class="pick">
-                  <input type="checkbox" name="need" value="Social Media &amp; Content" /><span>Social &amp; content</span>
+                  <input type="checkbox" name="need[]" value="Social Media &amp; Content" /><span>Social &amp; content</span>
                 </label>
                 <label class="pick">
-                  <input type="checkbox" name="need" value="Photography &amp; Videography" /><span>Photo &amp; video</span>
+                  <input type="checkbox" name="need[]" value="Photography &amp; Videography" /><span>Photo &amp; video</span>
                 </label>
                 <label class="pick">
-                  <input type="checkbox" name="need" value="SEO, AEO &amp; GEO" /><span>SEO / AEO / GEO</span>
+                  <input type="checkbox" name="need[]" value="SEO, AEO &amp; GEO" /><span>SEO / AEO / GEO</span>
                 </label>
                 <label class="pick">
-                  <input type="checkbox" name="need" value="Digital Strategy &amp; Campaigns" /><span>Strategy</span>
+                  <input type="checkbox" name="need[]" value="Digital Strategy &amp; Campaigns" /><span>Strategy</span>
                 </label>
               </fieldset>
 
@@ -1036,7 +1036,7 @@
                 Send it over <i data-lucide="send" aria-hidden="true"></i>
               </button>
               <p class="form__fine">
-                Front-end demo form. Hook it up to your inbox or WhatsApp Business before launch.
+                Your details go straight to our inbox and are only used to reply to you.
               </p>
             </form>
 

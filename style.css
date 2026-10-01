@@ -2141,6 +2141,9 @@ html.anim-on [data-reveal] {
   letter-spacing: 0.04em;
   color: var(--text-faint);
 }
+.form__fine.is-error {
+  color: var(--coral);
+}
 
 /* Thank-you panel */
 .thanks {

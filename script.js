@@ -787,8 +787,9 @@ function initLightbox() {
 
 /* ==========================================================================
    14  CONTACT FORM
-   Front-end only: it validates, then shows the thank-you panel.
-   Connect it to a mail service or WhatsApp Business before launch.
+   Validates in the browser, then posts to contact.php, which emails the
+   enquiry to info@mediachore.co.za. The thank-you panel only shows once the
+   server confirms the send.
    ========================================================================== */
 function initForm() {
   const form = $("#contactForm");
@@ -796,6 +797,10 @@ function initForm() {
   const thanksLine = $("#thanksLine");
   const again = $("#againBtn");
   if (!form || !thanks) return;
+
+  const submit = $('button[type="submit"]', form);
+  const status = $(".form__fine", form);
+  const fineText = status ? status.textContent : "";
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
 
@@ -840,7 +845,10 @@ function initForm() {
     }
 
     /* Honeypot filled in means a bot: pretend it worked, send nothing */
-    if (honey && honey.value) ok = true;
+    if (honey && honey.value) {
+      showThanks();
+      return;
+    }
 
     if (!ok) {
       const firstError = $(".field.has-error input, .field.has-error textarea", form);
@@ -848,10 +856,38 @@ function initForm() {
       return;
     }
 
+    /* contact.php emails the enquiry to the inbox; only thank the visitor
+       once the server confirms it went */
+    submit.disabled = true;
+    status.textContent = "Sending…";
+    status.classList.remove("is-error");
+
+    fetch(form.getAttribute("action") || "contact.php", {
+      method: "POST",
+      body: new FormData(form),
+      headers: { Accept: "application/json" },
+    })
+      .then((res) => res.json().catch(() => ({})).then((data) => ({ res, data })))
+      .then(({ res, data }) => {
+        if (!res.ok || !data.ok) throw new Error(data.error || "Send failed");
+        status.textContent = fineText;
+        showThanks();
+      })
+      .catch(() => {
+        status.textContent =
+          "Sorry, that did not send. Please try again, or WhatsApp us on 082 464 2851.";
+        status.classList.add("is-error");
+      })
+      .finally(() => {
+        submit.disabled = false;
+      });
+  });
+
+  function showThanks() {
     /* Personalise the thank-you message */
-    const picks = $$('input[name="need"]:checked', form).map((box) => box.value);
+    const picks = $$('input[name="need[]"]:checked', form).map((box) => box.value);
     if (thanksLine) {
-      const first = name.value.trim().split(" ")[0];
+      const first = $("#cfName").value.trim().split(" ")[0];
       const about = picks.length ? ` about ${picks.slice(0, 2).join(" and ").toLowerCase()}` : "";
       thanksLine.textContent = `Thanks ${first ? first : "there"} — we have your details and will come back to you personally${about}. If it is urgent, WhatsApp is fastest.`;
     }
@@ -864,7 +900,7 @@ function initForm() {
     }
     thanks.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
     initIcons(); // the panel's icon needs drawing
-  });
+  }
 
   if (again) {
     again.addEventListener("click", () => {
